@@ -3,13 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace Kerstbot.Responsers
 {
-    public class GoogleMeetResponder : IResponder
+    public class ZoomResponder : IResponder
     {
         public bool CanRespond(ResponseContext context)
         {
             var respond = !context.BotHasResponded
                 && (context.Message.MentionsBot || context.Message.ChatHub.Type == SlackChatHubType.DM)
-                && context.Message.Text.ToLower().Contains("meet.google.com");
+                && context.Message.Text.ToLower().Contains("zoom.us");
 
             return respond;
         }

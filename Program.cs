@@ -54,7 +54,8 @@ namespace Kerstbot
             var bot = new Bot();
             var responders = new List<IResponder> {
                 new HelloResponder(),
-                new GoogleMeetResponder()
+                new GoogleMeetResponder(),
+                new ZoomResponder()
             };
 
             bot.Responders.AddRange(responders);
