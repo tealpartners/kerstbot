@@ -54,4 +54,27 @@ public static class Utils
 
         return true;
     }
+
+    public static async Task Shout(this Bot bot, string message)
+    {
+        try
+        {
+            foreach (var channel in bot.ConnectedChannels)
+            {
+                var botMessage = new BotMessage()
+                {
+                    Text = message,
+                    ChatHub = channel
+                };
+
+                await bot.Say(botMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Unknown exception:\r\n" + ex.ToString());
+        }
+    }
+
+    public static bool Between(this TimeSpan source, TimeSpan start, TimeSpan end) => source > start && source < end;
 }
