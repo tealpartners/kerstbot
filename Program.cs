@@ -22,7 +22,7 @@ namespace Kerstbot
                 return;
             }
 
-            Console.WriteLine("Kerstbot v1.0");
+            Console.WriteLine("Kerstbot v1.1");
 
             _token = args[0];
 
@@ -38,13 +38,14 @@ namespace Kerstbot
             var tokenSource = new CancellationTokenSource();
             var consoleTask = Task.Run(() => ConsoleTask(bot, tokenSource));
             var connectionTask = Task.Run(() => ConnectionWatcher(bot, tokenSource.Token));
+            var disconnectTask = Task.Run(() => DisconnectTask(bot, tokenSource.Token));
             var messageTask = Task.Run(() => MessageTask(bot, tokenSource.Token));
 
             Console.WriteLine("Connected... type 'close' to disconnect.");
 
             try
             {
-                await Task.WhenAll(connectionTask, consoleTask, messageTask);
+                await Task.WhenAll(connectionTask, consoleTask, messageTask, disconnectTask);
             }
             catch (TaskCanceledException) { }
         }
@@ -89,6 +90,19 @@ namespace Kerstbot
             } while (_running);
         }
 
+        private static async Task DisconnectTask(Bot bot, CancellationToken token)
+        {
+            do
+            {
+                await Task.Delay(TimeSpan.FromHours(1), token);
+
+                if (_running)
+                {
+                    bot.Disconnect();
+                }
+            } while (_running);
+        }
+
         private static async Task MessageTask(Bot bot, CancellationToken token)
         {
             var rnd = new Random();
@@ -110,13 +124,13 @@ namespace Kerstbot
                 }
 
                 var rndSeconds = rnd.Next(1000);
-                var waitTime = TimeSpan.FromHours(1) + TimeSpan.FromSeconds(rndSeconds);
+                var waitTime = TimeSpan.FromHours(3) + TimeSpan.FromSeconds(rndSeconds);
 
                 await Task.Delay(waitTime, token);
             } while (_running);
         }
 
-        private static bool IsWorkingHours() => DateTime.Now.TimeOfDay.Between(TimeSpan.FromHours(8), TimeSpan.FromHours(17));
+        private static bool IsWorkingHours() => DateTime.Now.TimeOfDay.Between(TimeSpan.FromHours(8), TimeSpan.FromHours(18));
 
         private static Bot CreateBot()
         {

@@ -9,6 +9,7 @@ namespace Kerstbot.Responsers
         public bool CanRespond(ResponseContext context)
         {
             return !context.BotHasResponded
+                   && !context.Message.User.IsSlackbot
                    && (context.Message.MentionsBot || context.Message.ChatHub.Type == SlackChatHubType.DM)
                    && context.Message.Text.ToLower().Contains("hello");
         }
