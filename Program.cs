@@ -130,7 +130,9 @@ namespace Kerstbot
             } while (_running);
         }
 
-        private static bool IsWorkingHours() => DateTime.Now.TimeOfDay.Between(TimeSpan.FromHours(8), TimeSpan.FromHours(18));
+        private static bool IsWorkingHours() => IsWorkDay() && DateTime.Now.TimeOfDay.Between(TimeSpan.FromHours(8), TimeSpan.FromHours(18));
+
+        private static bool IsWorkDay() => DateTime.Now.DayOfWeek != DayOfWeek.Saturday && DateTime.Now.DayOfWeek != DayOfWeek.Sunday;
 
         private static Bot CreateBot()
         {
