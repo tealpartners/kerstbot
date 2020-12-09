@@ -18,3 +18,5 @@ Where __token__ is the token you retrieve from the Slack documentation.
 ## Usage
 Just say ```@<botname> https://meet.google.com/<code>``` to make him auto-join your meeting.
 
+Edit ```messages.txt``` to make kerstbot say some random messages every now and then.
+Edit ```replies.txt``` to make kerstbot reply to certain words.

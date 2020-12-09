@@ -8,6 +8,7 @@ namespace Kerstbot.Responsers
         public bool CanRespond(ResponseContext context)
         {
             var respond = !context.BotHasResponded
+                && !context.Message.User.IsSlackbot
                 && (context.Message.MentionsBot || context.Message.ChatHub.Type == SlackChatHubType.DM)
                 && context.Message.Text.ToLower().Contains("zoom.us");
 

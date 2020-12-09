@@ -22,11 +22,12 @@ namespace Kerstbot
                 return;
             }
 
-            Console.WriteLine("Kerstbot v1.1");
+            Console.WriteLine("Kerstbot v1.2");
 
             _token = args[0];
 
-            var bot = CreateBot();
+            var replyResponder = new WittyReplyResponder();
+            var bot = CreateBot(replyResponder);
             _running = await bot.TryConnect(_token);
 
             if (!_running)
@@ -40,6 +41,7 @@ namespace Kerstbot
             var connectionTask = Task.Run(() => ConnectionWatcher(bot, tokenSource.Token));
             var disconnectTask = Task.Run(() => DisconnectTask(bot, tokenSource.Token));
             var messageTask = Task.Run(() => MessageTask(bot, tokenSource.Token));
+            var replyTask = Task.Run(() => LoadReplies(replyResponder, tokenSource.Token));
 
             Console.WriteLine("Connected... type 'close' to disconnect.");
 
@@ -103,6 +105,27 @@ namespace Kerstbot
             } while (_running);
         }
 
+        private static async Task LoadReplies(WittyReplyResponder replyResponder, CancellationToken token)
+        {
+            do
+            {
+                var replyText = File.ReadAllText("replies.txt");
+                var replySplit = replyText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                foreach (var replyPart in replySplit)
+                {
+                    var replyParts = replyPart.Split(";");
+                    var reply = replyParts[replyParts.Length - 1];
+                    for (var i = 0; i < replyParts.Length - 1; i++)
+                    {
+                        var key = replyParts[i];
+                        replyResponder.AddOrReplaceReply(key, reply);
+                    }
+                }
+
+                await Task.Delay(TimeSpan.FromMinutes(5), token);
+            } while (_running);
+        }
+
         private static async Task MessageTask(Bot bot, CancellationToken token)
         {
             var rnd = new Random();
@@ -134,10 +157,11 @@ namespace Kerstbot
 
         private static bool IsWorkDay() => DateTime.Now.DayOfWeek != DayOfWeek.Saturday && DateTime.Now.DayOfWeek != DayOfWeek.Sunday;
 
-        private static Bot CreateBot()
+        private static Bot CreateBot(WittyReplyResponder replyResponder)
         {
             var bot = new Bot();
             var responders = new List<IResponder> {
+                replyResponder,
                 new HelloResponder(),
                 new GoogleMeetResponder(),
                 new ZoomResponder()
