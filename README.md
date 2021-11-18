@@ -2,6 +2,16 @@
 Holiday slackbot that allows a webcam to auto join any meeting.
 
 ## Installation
+### Configure an app on Slack and retrieving an OAuth token for your application
+Goto https://api.slack.com/apps
+Click "Create New App"
+Give the app a name and assign it to a workspace
+Click "OAuth & Permissions" (In the left menu)
+Under "Scopes" click "Add an OAuth Scope" and select your desired permissions (for example chat:write:bot)
+At the top of the page, click "Install App to Workspace"
+Click Allow
+Copy the generated "OAuth Access Token". This is the token you need to pass into the Slack Client.
+
 ### Prepare your browser
 Make sure that your browser is configured to auto-join a meeting when it tries to open a URL.
 
